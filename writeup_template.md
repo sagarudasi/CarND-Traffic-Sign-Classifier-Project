@@ -1,4 +1,4 @@
-#**Traffic Sign Recognition** 
+#**Traffic Sign Recognition**
 
 ##Writeup Template
 
@@ -65,76 +65,77 @@ Below is the visualization of the training data set. Basically, we have 43 diffe
 
 Initially, I didn't apply any image pre-processing and decided to modify the network architecture to improve the network accuracy.
 
-Once I was satisfied with the network channels of convolution, I applied normalization to the image pixel using the formula mentioned. ((pixel - 128)/128)
+Then, I applied normalization to the image pixel by dividing each pixel by 255 thus keeping it between 0 - 1.
 
-Following is the result -
-
-![Normal][image10]
-![Pre Processed][image11]
 
 ####2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
 
 My final model consisted of the following layers:
 
-| Layer         		|     Description	        					| 
-|:---------------------:|:---------------------------------------------:| 
-| Input         		| 32x32x3 RGB image   							| 
-| Convolution 5x5     	| 1x1 stride, same padding, outputs 28x28x15 	|
-| RELU					| output 28x28x15								|			
-| Max pooling	      	| 2x2 stride,  outputs 14x14x15 				|
-| Convolution 3x3	    | 1x1 stride, same padding, output 12x12x15     |
-| RELU                  | output 12x12x15 							    |
-| Max pooling           | 2x2 stride, outputs 6x6x15                    |
-| Flatten        	    | With 36x15 = 540 neurons                      |        					
-| Fully connected 1		| 540 x 120        								|
-| Fully connected 2		| 120 x 84			                            |											
-| Fully connected 3		| 84 x 43				                        |									
- 
+| Layer         		|     Description	        					|
+|:---------------------:|:---------------------------------------------:|
+| Input         		| 32x32x3 RGB image   							|
+| Convolution 5x5     	| 1x1 stride, same padding, outputs 28x28x10 	|
+| RELU					| output 28x28x10								|			
+| Max pooling	      	| 2x2 stride,  outputs 14x14x10 				|
+| Convolution 3x3	    | 1x1 stride, same padding, output 12x12x16     |
+| RELU                  | output 12x12x16 							    |
+| Max pooling           | 2x2 stride, outputs 6x6x16                    |
+| Convolution 3x3	    | 1x1 stride, same padding, output 6x6x28     |
+| RELU                  | output 6x6x28 							    |
+| Flatten        	    | With 16x28 = 448 neurons                      |        					
+| Fully connected 1		| 448 x 120        								|
+| Dropout							| 50%                               |
+| Fully connected 2		| 120 x 43				                        |									
+
 
 
 ####3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
 
 I used AdamOptimizer to optimize the network and used batch size of 128 for training.
-I trained the network for 50 EPOCHS.
-The learning rate I used is 0.0005. 
+I trained the network for 100 EPOCHS.
+The learning rate I used is 0.001.
 
 ####4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
 
 First I used the same LeNet architecture as described in the Udacity lecture.
-One obvious thing was that this time we have more classes to categorize the data. 43 and not just 10.
+One obvious thing was that this time we have more classes (43 and not 10) to categorize the data and thus more features to be extracted.
 
-So I increased the number of convolution channels in each layer significantly as compared to original LeNet.
+I tried to train the network for 10 EPOCHS and 0.001 learning rate and compared the training accuracy with the validation accuracy.
+I observed the network was underfitting.
 
-I then tried to train the network for 10 EPOCHS and 0.001 learning rate.
-But the network was jumping significantly in accuracy 
-So I reduced the learning rate to 0.0005 and increased the EPOCHS to 50.
+So I decided to add one more convolution layer and increased the channels further.
+
+This time the network started overfitting. So I added 50% dropout and also removed one fully connected layer.
+
+Then I ran the program for 100 EPOCHS and got max accuracy of 95.2 at about 94th EPOCH which was acceptable.
 
 My final model results were:
-* training set accuracy of ?
-* validation set accuracy of ? 
-* test set accuracy of ?
- 
+* training set accuracy of 0.996 (99.6%)
+* validation set accuracy of 0.940 (94.0%)
+* test set accuracy of 0.931 (93.1%)
+
 
 ###Test a Model on New Images
 
 ####1. Choose five German traffic signs found on the web and provide them in the report. For each image, discuss what quality or qualities might be difficult to classify.
 
-Here are six German traffic signs that I found on the web:
+Following are the images which I found on net and converted to 32x32 JPG using GIMP tool.
 
-![alt text][image4] ![alt text][image5] ![alt text][image6] 
+![alt text][image4] ![alt text][image5] ![alt text][image6]
 ![alt text][image7] ![alt text][image8] ![alt text][image9]
 
-Out of 6, I got 5 correctly recognized. One image failed possibly due to more zoom level or the watermark.
+Out of 6, I got 5 correctly recognized. One image failed possibly because its slightly oval in shape than round.
 
 ####2. Discuss the model's predictions on these new traffic signs and compare the results to predicting on the test set. At a minimum, discuss what the predictions were, the accuracy on these new predictions, and compare the accuracy to the accuracy on the test set (OPTIONAL: Discuss the results in more detail as described in the "Stand Out Suggestions" part of the rubric).
 
 Here are the results of the prediction:
 
-| Image			        |     Prediction	        					| 
-|:---------------------:|:---------------------------------------------:| 
-| Speed limit (60km/h)	| Speed limit (50km/h) Incorrect  				|
-| Speed limit (60km/h)	| Speed limit (60km/h)  						| 
-| Speed limit (70km/h)	| Speed limit (70km/h)  						| 
+| Image			        |     Prediction	        					|
+|:---------------------:|:---------------------------------------------:|
+| Speed limit (60km/h)	| Speed limit (60km/h)   				|
+| Speed limit (60km/h)	| Speed limit (120km/h)  	Incorrect					|
+| Speed limit (70km/h)	| Speed limit (70km/h)  					|
 | Yield     			| Yield 										|
 | Stop					| Stop											|
 | No entry	      		| No entry					 			    	|
@@ -144,22 +145,21 @@ The model was able to correctly guess 5 of the 6 traffic signs, which gives an a
 
 ####3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
 
-The code for making predictions on my final model is located in the 11th cell of the Ipython notebook.
+The model is working with acceptable accuracy on the images which I downloaded.
+Consider the first image, it was recognized as Speed limit 60km/h with 99.9% accuracy which is correct.
 
-For the first image, the model is relatively sure that this is a stop sign (probability of 0.6), and the image does contain a stop sign. The top five soft max probabilities were
+ The top five soft max probabilities for first image were -
 
-| Probability         	|     Prediction	        					| 
-|:---------------------:|:---------------------------------------------:| 
-| .60         			| Stop sign   									| 
-| .20     				| U-turn 										|
-| .05					| Yield											|
-| .04	      			| Bumpy Road					 				|
-| .01				    | Slippery Road      							|
+| Probability         	|     Prediction	        					|
+|:---------------------:|:---------------------------------------------:|
+| .99         			| Speed limit 60km/h   									|
+| .000009     				| Speed limit 50km/h										|
+| .000003				| Speed limit 30km/h											|
+| .0000002	      			| Right-of-way at the next intersection				 				|
+| .0000001				    | Children crossing      							|
 
-
-For the second image ... 
 
 ### (Optional) Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)
 ####1. Discuss the visual output of your trained network's feature maps. What characteristics did the neural network use to make classifications?
 
-
+Not implemented
